@@ -7,17 +7,21 @@ import {
   ChevronDown,
   Shield,
   Wifi,
-  WifiOff
+  WifiOff,
+  MapPin,
+  Heart,
+  Battery,
 } from 'lucide-react';
 
 // Import all dashboard components
 import ProximityRadar from '../components/dashboard/ProximityRadar';
-import AIMoodDetector from '../components/dashboard/AIMoodDetector';
+import ProfessionalMoodIndicator from '../components/dashboard/ProfessionalMoodIndicator';
 import VitalsPanel, { VitalsData } from '../components/dashboard/VitalsPanel';
 import QuickActions from '../components/dashboard/QuickActions';
 import BottomNav, { TabType } from '../components/dashboard/BottomNav';
 import EmergencySOS from '../components/dashboard/EmergencySOS';
 import NotificationToast, { useNotifications } from '../components/dashboard/NotificationToast';
+import ProfessionalAvatar from '../components/shared/ProfessionalAvatar';
 
 // Mock data for demonstration
 const MOCK_VITALS: VitalsData = {
@@ -49,18 +53,24 @@ const MOCK_VITALS: VitalsData = {
 const MONITORED_PERSON = {
   name: 'Martha',
   fullName: 'Martha Stewart',
-  emoji: '👵',
+  avatarVariant: 'elderly-woman' as const,
   status: 'online' as const,
   distance: 128,
   location: 'Lincoln Elementary',
   mood: {
     current: 'Happy',
-    emoji: '😊',
     confidence: 87,
     updatedAt: new Date(Date.now() - 5 * 60000),
     trend: 'stable' as const
   }
 };
+
+// Activity items with professional icons
+const RECENT_ACTIVITIES = [
+  { time: '8:15 AM', text: 'Arrived at Lincoln Elementary', icon: MapPin, iconColor: 'text-blue-500', iconBg: 'bg-blue-50' },
+  { time: '8:00 AM', text: 'Heart rate normal (72 BPM)', icon: Heart, iconColor: 'text-rose-500', iconBg: 'bg-rose-50' },
+  { time: '7:45 AM', text: 'Device fully charged', icon: Battery, iconColor: 'text-emerald-500', iconBg: 'bg-emerald-50' },
+];
 
 const GuardianDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -202,7 +212,13 @@ const GuardianDashboard: React.FC = () => {
             location={MONITORED_PERSON.location}
             personName={MONITORED_PERSON.fullName}
             status={MONITORED_PERSON.status}
-            avatarEmoji={MONITORED_PERSON.emoji}
+            avatarComponent={
+              <ProfessionalAvatar
+                name={MONITORED_PERSON.fullName}
+                variant={MONITORED_PERSON.avatarVariant}
+                size="lg"
+              />
+            }
           />
         </motion.section>
 
@@ -216,9 +232,8 @@ const GuardianDashboard: React.FC = () => {
             <span className="w-1.5 h-1.5 rounded-full bg-purple-500" />
             AI-Detected Mood
           </h2>
-          <AIMoodDetector
+          <ProfessionalMoodIndicator
             mood={MONITORED_PERSON.mood.current}
-            emoji={MONITORED_PERSON.mood.emoji}
             confidence={MONITORED_PERSON.mood.confidence}
             updatedAt={MONITORED_PERSON.mood.updatedAt}
             trend={MONITORED_PERSON.mood.trend}
@@ -277,25 +292,26 @@ const GuardianDashboard: React.FC = () => {
           </h2>
 
           <div className="space-y-3">
-            {[
-              { time: '8:15 AM', text: 'Arrived at Lincoln Elementary', icon: '📍' },
-              { time: '8:00 AM', text: 'Heart rate normal (72 BPM)', icon: '❤️' },
-              { time: '7:45 AM', text: 'Device fully charged', icon: '🔋' },
-            ].map((activity, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.7 + i * 0.1 }}
-                className="flex items-center gap-3 py-2 border-b border-slate-50 last:border-0"
-              >
-                <span className="text-lg">{activity.icon}</span>
-                <div className="flex-1">
-                  <p className="text-sm text-slate-700">{activity.text}</p>
-                  <p className="text-xs text-slate-400">{activity.time}</p>
-                </div>
-              </motion.div>
-            ))}
+            {RECENT_ACTIVITIES.map((activity, i) => {
+              const IconComponent = activity.icon;
+              return (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.7 + i * 0.1 }}
+                  className="flex items-center gap-3 py-2 border-b border-slate-50 last:border-0"
+                >
+                  <div className={`w-8 h-8 rounded-full ${activity.iconBg} flex items-center justify-center`}>
+                    <IconComponent className={`w-4 h-4 ${activity.iconColor}`} />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm text-slate-700">{activity.text}</p>
+                    <p className="text-xs text-slate-400">{activity.time}</p>
+                  </div>
+                </motion.div>
+              );
+            })}
           </div>
         </motion.section>
       </main>

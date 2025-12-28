@@ -5,6 +5,7 @@ import LoginPage from './pages/LoginPage';
 import PremiumLoginPage from './pages/PremiumLoginPage';
 import DashboardPage from './pages/DashboardPage';
 import GuardianDashboard from './pages/GuardianDashboard';
+import OnboardingFlow from './pages/OnboardingFlow';
 import { AnimatePresence } from 'framer-motion';
 
 const App: React.FC = () => {
@@ -15,6 +16,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/login" element={<PremiumLoginPage />} />
             <Route path="/login-simple" element={<LoginPage />} />
+            <Route path="/onboarding" element={<OnboardingFlow />} />
             <Route path="/dashboard" element={<GuardianDashboard />} />
             <Route path="/dashboard-old" element={<DashboardPage />} />
             <Route path="*" element={<Navigate to="/login" replace />} />

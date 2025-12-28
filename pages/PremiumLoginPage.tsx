@@ -33,15 +33,15 @@ const PremiumLoginPage: React.FC = () => {
     setError('');
     setIsLoading(true);
 
-    // Simulate auth
+    // Simulate auth - redirect to onboarding for new users
     await new Promise(resolve => setTimeout(resolve, 1500));
-    navigate('/dashboard');
+    navigate('/onboarding');
   };
 
   const handleSSOLogin = async (provider: string) => {
     setIsLoading(true);
     await new Promise(resolve => setTimeout(resolve, 1000));
-    navigate('/dashboard');
+    navigate('/onboarding');
   };
 
   // Staggered animation variants

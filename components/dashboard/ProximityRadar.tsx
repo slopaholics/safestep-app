@@ -8,7 +8,8 @@ interface ProximityRadarProps {
   location: string;
   personName: string;
   status: 'online' | 'offline';
-  avatarEmoji: string;
+  avatarEmoji?: string;
+  avatarComponent?: React.ReactNode;
 }
 
 const ProximityRadar: React.FC<ProximityRadarProps> = ({
@@ -17,6 +18,7 @@ const ProximityRadar: React.FC<ProximityRadarProps> = ({
   personName,
   status,
   avatarEmoji,
+  avatarComponent,
 }) => {
   // Determine proximity status based on distance
   const proximityStatus: ProximityStatus = useMemo(() => {
@@ -186,14 +188,22 @@ const ProximityRadar: React.FC<ProximityRadarProps> = ({
           >
             {/* Inner circle with avatar */}
             <div
-              className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-lg"
+              className="w-16 h-16 rounded-full bg-white flex items-center justify-center shadow-lg overflow-hidden"
               style={{
                 border: `3px solid ${statusConfig.primaryColor}`,
               }}
             >
-              <span className="text-3xl" role="img" aria-label={personName}>
-                {avatarEmoji}
-              </span>
+              {avatarComponent ? (
+                avatarComponent
+              ) : avatarEmoji ? (
+                <span className="text-3xl" role="img" aria-label={personName}>
+                  {avatarEmoji}
+                </span>
+              ) : (
+                <span className="text-lg font-bold text-slate-600">
+                  {personName.split(' ').map(n => n[0]).join('').toUpperCase()}
+                </span>
+              )}
             </div>
 
             {/* Online/Offline indicator */}
